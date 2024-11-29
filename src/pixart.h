@@ -48,6 +48,11 @@ struct pixart_data {
 
     // for pmw3610 smart algorithm
     bool sw_smart_flag;
+
+    // ジェスチャー検出用の新しいメンバー
+    int64_t last_gesture_time;    // 最後のジェスチャー検出時間
+    int16_t gesture_count;        // ジェスチャーカウント
+    int16_t last_x_movement;      // 前回のX軸移動方向
 };
 
 // device config data structure
