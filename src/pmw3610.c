@@ -577,9 +577,39 @@ static enum pixart_input_mode get_input_mode_for_current_layer(const struct devi
     return MOVE;
 }
 
+// === 追加開始: ジェスチャー検出関数 ===
+static void check_gesture(struct pixart_data *data, int16_t x_movement) {
+    int64_t current_time = k_uptime_get();
+    
+    if ((x_movement * data->last_x_movement < 0) && 
+        (abs(x_movement) > 20)) {
+        
+        if ((current_time - data->last_gesture_time) < 1000) {
+            data->gesture_count++;
+            
+            if (data->gesture_count >= 4) {
+                // モードをMOVEとSCROLL間で切り替え
+                data->input_mode = (data->input_mode == MOVE) ? SCROLL : MOVE;
+                
+                // 既存のinput_mode_changedフラグを使用することで
+                // スクロールデルタのリセットは自動的に行われる
+                data->gesture_count = 0;
+            }
+        } else {
+            data->gesture_count = 1;
+        }
+        
+        data->last_gesture_time = current_time;
+    }
+    
+    data->last_x_movement = x_movement;
+}
+// === 追加終了 ===
+
 static int pmw3610_report_data(const struct device *dev) {
     struct pixart_data *data = dev->data;
     uint8_t buf[PMW3610_BURST_SIZE];
+    int16_t x, y;
 
     if (unlikely(!data->ready)) {
         LOG_WRN("Device is not initialized yet");
@@ -589,6 +619,9 @@ static int pmw3610_report_data(const struct device *dev) {
     int32_t dividor;
     enum pixart_input_mode input_mode = get_input_mode_for_current_layer(dev);
     bool input_mode_changed = data->curr_mode != input_mode;
+
+    check_gesture(data, x);
+    
     switch (input_mode) {
     case MOVE:
         set_cpi_if_needed(dev, CONFIG_PMW3610_CPI);
