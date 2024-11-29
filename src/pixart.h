@@ -32,6 +32,12 @@ struct pixart_data {
     int16_t last_y;
 #endif
 
+    // スクロールモード切り替え用の変数を追加
+    bool scroll_mode;
+    int32_t last_direction_change;
+    int8_t last_x_direction;
+    uint8_t direction_changes;
+
     // motion interrupt isr
     struct gpio_callback irq_gpio_cb;
     // the work structure holding the trigger job
@@ -48,11 +54,6 @@ struct pixart_data {
 
     // for pmw3610 smart algorithm
     bool sw_smart_flag;
-
-    // ジェスチャー検出用の新しいメンバー
-    int64_t last_gesture_time;    // 最後のジェスチャー検出時間
-    int16_t gesture_count;        // ジェスチャーカウント
-    int16_t last_x_movement;      // 前回のX軸移動方向
 };
 
 // device config data structure
