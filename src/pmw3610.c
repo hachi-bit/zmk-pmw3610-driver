@@ -669,7 +669,7 @@ static int pmw3610_report_data(const struct device *dev) {
         
         if ((current_time - data->last_direction_change) < 500) {  // 1秒以内の方向変更
             data->direction_changes++;
-            if (data->direction_changes >= 4) {  // 4回の方向変更でモード切り替え
+            if (data->direction_changes >= 3) {  // 3回の方向変更でモード切り替え
                 data->scroll_mode = !data->scroll_mode;
                 data->direction_changes = 0;
             }
