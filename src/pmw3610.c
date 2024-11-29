@@ -664,7 +664,7 @@ static int pmw3610_report_data(const struct device *dev) {
     // 左右の動きを検出してモード切り替え
     int8_t current_x_direction = (raw_x > 0) ? 1 : (raw_x < 0) ? -1 : 0;
     
-    if (current_x_direction != 0 && current_x_direction != data->last_x_direction && abs(current_x_direction) > 20)) {
+    if (current_x_direction != 0 && current_x_direction != data->last_x_direction && abs(current_x_direction) > 20) {
         int32_t current_time = k_uptime_get();
         
         if ((current_time - data->last_direction_change) < 1000) {  // 1秒以内の方向変更
