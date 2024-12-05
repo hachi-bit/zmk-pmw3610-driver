@@ -671,7 +671,7 @@ static int pmw3610_report_data(const struct device *dev) {
             data->direction_changes++;
             if (data->direction_changes >= 3) {  // 3回の方向変更でモード切り替え
                 data->scroll_mode = !data->scroll_mode;
-                data->direction_changes = 0;
+                data->direction_changes = -1;
             }
         } else {
             data->direction_changes = 0;
